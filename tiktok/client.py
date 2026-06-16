@@ -253,6 +253,15 @@ def update_adgroup_status(adgroup_id: str, status: str) -> dict:
     })
 
 
+def update_ad_name(adgroup_id: str, ad_id: str, new_name: str) -> dict:
+    """Cambia el nombre de un anuncio individual."""
+    return _post("/ad/update/", {
+        "advertiser_id": _advertiser_id(),
+        "adgroup_id": adgroup_id,
+        "creatives": [{"ad_id": ad_id, "ad_name": new_name}],
+    })
+
+
 def update_ad_status(ad_id: str, status: str) -> dict:
     """
     Activa o pausa un anuncio individual.

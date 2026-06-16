@@ -169,6 +169,19 @@ def update_adgroup_status(adgroup_id: str, status: str) -> dict:
 
 
 @mcp.tool()
+def update_ad_name(adgroup_id: str, ad_id: str, new_name: str) -> dict:
+    """
+    Cambia el nombre de un anuncio individual.
+
+    Args:
+        adgroup_id: ID del ad group al que pertenece el anuncio (obtenlo con get_adgroups).
+        ad_id:      ID del anuncio a renombrar (obtenlo con get_ads).
+        new_name:   Nuevo nombre para el anuncio.
+    """
+    return tiktok.update_ad_name(adgroup_id=adgroup_id, ad_id=ad_id, new_name=new_name)
+
+
+@mcp.tool()
 def update_ad_status(ad_id: str, status: str) -> dict:
     """
     Activa, pausa o elimina un anuncio individual.
