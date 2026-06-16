@@ -169,6 +169,55 @@ def get_report(
     })
 
 
+def get_pixels() -> dict:
+    """Lista los píxeles configurados en la cuenta anunciante."""
+    return _get("/pixel/list/", {
+        "advertiser_id": _advertiser_id(),
+    })
+
+
+def get_pixel_events(pixel_id: str) -> dict:
+    """Lista los eventos de conversión configurados en un píxel."""
+    return _get("/pixel/event/list/", {
+        "advertiser_id": _advertiser_id(),
+        "pixel_id": pixel_id,
+    })
+
+
+def get_conversion_report(
+    start_date: str,
+    end_date: str,
+    data_level: str = "AUCTION_CAMPAIGN",
+) -> dict:
+    """
+    Reporte de conversiones del píxel por fecha y campaña.
+    Incluye: conversiones, costo por conversión, tasa de conversión,
+    valor total de compra y ROAS.
+    """
+    import json
+    return _get("/report/integrated/get/", {
+        "advertiser_id": _advertiser_id(),
+        "report_type": "BASIC",
+        "data_level": data_level,
+        "dimensions": json.dumps(["campaign_id", "stat_time_day"]),
+        "metrics": json.dumps([
+            "spend",
+            "impressions",
+            "clicks",
+            "conversions",
+            "cost_per_conversion",
+            "conversion_rate",
+            "total_purchase_value",
+            "purchase_roas",
+            "real_time_conversions",
+            "real_time_cost_per_conversion",
+        ]),
+        "start_date": start_date,
+        "end_date": end_date,
+        "page_size": 100,
+    })
+
+
 def update_campaign_status(campaign_id: str, status: str) -> dict:
     """
     Activa o pausa una campaña.

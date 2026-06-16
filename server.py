@@ -90,6 +90,49 @@ def get_report(
 
 
 @mcp.tool()
+def get_pixels() -> dict:
+    """
+    Lista los píxeles configurados en la cuenta de TikTok Ads.
+    Devuelve el pixel_id, nombre y estado de cada píxel.
+    """
+    return tiktok.get_pixels()
+
+
+@mcp.tool()
+def get_pixel_events(pixel_id: str) -> dict:
+    """
+    Lista los eventos de conversión configurados en un píxel.
+
+    Args:
+        pixel_id: ID del píxel (obtenlo con get_pixels).
+    """
+    return tiktok.get_pixel_events(pixel_id=pixel_id)
+
+
+@mcp.tool()
+def get_conversion_report(
+    start_date: str,
+    end_date: str,
+    data_level: str = "AUCTION_CAMPAIGN",
+) -> dict:
+    """
+    Reporte de conversiones del píxel: spend, conversiones, costo por conversión,
+    tasa de conversión, valor total de compra y ROAS.
+
+    Args:
+        start_date: Fecha de inicio en formato YYYY-MM-DD (ej: '2026-06-01').
+        end_date:   Fecha de fin en formato YYYY-MM-DD (ej: '2026-06-15').
+        data_level: Nivel de agregación. Por defecto: AUCTION_CAMPAIGN.
+                    Opciones: AUCTION_CAMPAIGN | AUCTION_ADGROUP | AUCTION_AD.
+    """
+    return tiktok.get_conversion_report(
+        start_date=start_date,
+        end_date=end_date,
+        data_level=data_level,
+    )
+
+
+@mcp.tool()
 def update_campaign_status(campaign_id: str, status: str) -> dict:
     """
     Activa, pausa o elimina una campaña.
