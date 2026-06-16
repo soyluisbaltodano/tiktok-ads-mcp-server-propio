@@ -96,7 +96,7 @@ def build_http_app():
     from starlette.middleware.base import BaseHTTPMiddleware
     from starlette.middleware.cors import CORSMiddleware
 
-    mcp_asgi = mcp.streamable_http_app()
+    mcp_asgi = mcp.streamable_http_app(stateless_http=True)
 
     class OAuthMiddleware(BaseHTTPMiddleware):
         async def dispatch(self, request: Request, call_next):
