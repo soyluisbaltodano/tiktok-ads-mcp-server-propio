@@ -64,6 +64,7 @@ def get_ads(adgroup_id: str = "") -> dict:
 def get_report(
     start_date: str,
     end_date: str,
+    data_level: str = "AUCTION_CAMPAIGN",
     metrics: list[str] | None = None,
     dimensions: list[str] | None = None,
 ) -> dict:
@@ -72,7 +73,9 @@ def get_report(
 
     Args:
         start_date: Fecha de inicio en formato YYYY-MM-DD (ej: '2026-05-01').
-        end_date:   Fecha de fin   en formato YYYY-MM-DD (ej: '2026-05-23').
+        end_date:   Fecha de fin en formato YYYY-MM-DD (ej: '2026-05-23').
+        data_level: Nivel de agregación. Por defecto: AUCTION_CAMPAIGN.
+                    Opciones: AUCTION_CAMPAIGN | AUCTION_ADGROUP | AUCTION_AD.
         metrics:    Lista de métricas. Por defecto: spend, impressions, clicks,
                     ctr, cpc, reach. Otras: conversions, cost_per_conversion, etc.
         dimensions: Lista de dimensiones. Por defecto: campaign_id, stat_time_day.
@@ -80,6 +83,7 @@ def get_report(
     return tiktok.get_report(
         start_date=start_date,
         end_date=end_date,
+        data_level=data_level,
         metrics=metrics,
         dimensions=dimensions,
     )

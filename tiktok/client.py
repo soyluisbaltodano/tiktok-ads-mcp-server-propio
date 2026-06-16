@@ -140,13 +140,15 @@ def get_ads(adgroup_id: str | None = None) -> dict:
 def get_report(
     start_date: str,
     end_date: str,
+    data_level: str = "AUCTION_CAMPAIGN",
     metrics: list[str] | None = None,
     dimensions: list[str] | None = None,
 ) -> dict:
     """
     Reporte de rendimiento integrado.
     start_date / end_date: formato 'YYYY-MM-DD'
-    metrics por defecto: spend, impressions, clicks, ctr, cpc
+    data_level: AUCTION_CAMPAIGN | AUCTION_ADGROUP | AUCTION_AD
+    metrics por defecto: spend, impressions, clicks, ctr, cpc, reach
     dimensions por defecto: campaign_id, stat_time_day
     """
     if metrics is None:
@@ -158,6 +160,7 @@ def get_report(
     return _get("/report/integrated/get/", {
         "advertiser_id": _advertiser_id(),
         "report_type": "BASIC",
+        "data_level": data_level,
         "dimensions": json.dumps(dimensions),
         "metrics": json.dumps(metrics),
         "start_date": start_date,
