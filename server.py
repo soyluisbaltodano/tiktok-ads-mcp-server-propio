@@ -85,6 +85,54 @@ def get_report(
     )
 
 
+@mcp.tool()
+def update_campaign_status(campaign_id: str, status: str) -> dict:
+    """
+    Activa, pausa o elimina una campaña.
+
+    Args:
+        campaign_id: ID de la campaña (obtenlo con get_campaigns).
+        status: ENABLE (activar) | DISABLE (pausar) | DELETE (eliminar).
+    """
+    return tiktok.update_campaign_status(campaign_id=campaign_id, status=status)
+
+
+@mcp.tool()
+def update_campaign_budget(campaign_id: str, budget: float) -> dict:
+    """
+    Cambia el presupuesto de una campaña.
+
+    Args:
+        campaign_id: ID de la campaña (obtenlo con get_campaigns).
+        budget: Nuevo presupuesto en la moneda de la cuenta (ej: 50.0 = $50).
+    """
+    return tiktok.update_campaign_budget(campaign_id=campaign_id, budget=budget)
+
+
+@mcp.tool()
+def update_adgroup_status(adgroup_id: str, status: str) -> dict:
+    """
+    Activa, pausa o elimina un ad group.
+
+    Args:
+        adgroup_id: ID del ad group (obtenlo con get_adgroups).
+        status: ENABLE (activar) | DISABLE (pausar) | DELETE (eliminar).
+    """
+    return tiktok.update_adgroup_status(adgroup_id=adgroup_id, status=status)
+
+
+@mcp.tool()
+def update_ad_status(ad_id: str, status: str) -> dict:
+    """
+    Activa, pausa o elimina un anuncio individual.
+
+    Args:
+        ad_id: ID del anuncio (obtenlo con get_ads).
+        status: ENABLE (activar) | DISABLE (pausar) | DELETE (eliminar).
+    """
+    return tiktok.update_ad_status(ad_id=ad_id, status=status)
+
+
 def build_http_app():
     """
     App ASGI para Render.com con OAuth simulado.

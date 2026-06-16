@@ -34,6 +34,32 @@ def _advertiser_id() -> str:
     return adv_id
 
 
+def _post(endpoint: str, body: dict) -> dict:
+    """Realiza una petición POST a la API con reintentos automáticos."""
+    url = f"{BASE_URL}{endpoint}"
+
+    for attempt in range(_MAX_RETRIES):
+        response = requests.post(url, headers=_headers(), json=body, timeout=15)
+
+        if response.status_code == 429:
+            wait = _RETRY_BASE_DELAY * (2 ** attempt)
+            if attempt < _MAX_RETRIES - 1:
+                time.sleep(wait)
+                continue
+            raise RuntimeError("TikTok API rate limit: demasiadas peticiones.")
+
+        response.raise_for_status()
+        data = response.json()
+
+        if data.get("code") != 0:
+            msg = data.get("message", "Error desconocido de la API")
+            raise RuntimeError(f"TikTok API error {data.get('code')}: {msg}")
+
+        return data.get("data", {})
+
+    raise RuntimeError("No se pudo completar la petición después de varios intentos.")
+
+
 def _get(endpoint: str, params: dict) -> dict:
     """Realiza una petición GET a la API con reintentos automáticos ante rate limit."""
     url = f"{BASE_URL}{endpoint}"
@@ -137,4 +163,51 @@ def get_report(
         "start_date": start_date,
         "end_date": end_date,
         "page_size": 100,
+    })
+
+
+def update_campaign_status(campaign_id: str, status: str) -> dict:
+    """
+    Activa o pausa una campaña.
+    status: ENABLE (activar) | DISABLE (pausar) | DELETE (eliminar)
+    """
+    return _post("/campaign/status/update/", {
+        "advertiser_id": _advertiser_id(),
+        "campaign_ids": [campaign_id],
+        "opt_status": status,
+    })
+
+
+def update_campaign_budget(campaign_id: str, budget: float) -> dict:
+    """
+    Cambia el presupuesto de una campaña.
+    budget: monto en la moneda de la cuenta (ej: 50.0 = $50)
+    """
+    return _post("/campaign/update/budget/", {
+        "advertiser_id": _advertiser_id(),
+        "budget_list": [{"campaign_id": campaign_id, "budget": budget}],
+    })
+
+
+def update_adgroup_status(adgroup_id: str, status: str) -> dict:
+    """
+    Activa o pausa un ad group.
+    status: ENABLE (activar) | DISABLE (pausar) | DELETE (eliminar)
+    """
+    return _post("/adgroup/status/update/", {
+        "advertiser_id": _advertiser_id(),
+        "adgroup_ids": [adgroup_id],
+        "opt_status": status,
+    })
+
+
+def update_ad_status(ad_id: str, status: str) -> dict:
+    """
+    Activa o pausa un anuncio individual.
+    status: ENABLE (activar) | DISABLE (pausar) | DELETE (eliminar)
+    """
+    return _post("/ad/status/update/", {
+        "advertiser_id": _advertiser_id(),
+        "ad_ids": [ad_id],
+        "opt_status": status,
     })
