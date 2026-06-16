@@ -218,6 +218,121 @@ def get_conversion_report(
     })
 
 
+def get_account_balance() -> dict:
+    """Devuelve el saldo disponible y el historial de recargas de la cuenta."""
+    return _get("/advertiser/finance/get/", {
+        "advertiser_id": _advertiser_id(),
+    })
+
+
+def get_audiences() -> dict:
+    """Lista las audiencias personalizadas (remarketing, lookalike, etc.)."""
+    return _get("/dmp/custom_audience/list/", {
+        "advertiser_id": _advertiser_id(),
+        "page_size": 100,
+    })
+
+
+def get_video_library() -> dict:
+    """Lista los videos subidos a la biblioteca de creativos."""
+    return _get("/file/video/ad/search/", {
+        "advertiser_id": _advertiser_id(),
+        "page_size": 100,
+    })
+
+
+def get_image_library() -> dict:
+    """Lista las imágenes subidas a la biblioteca de creativos."""
+    return _get("/file/image/ad/search/", {
+        "advertiser_id": _advertiser_id(),
+        "page_size": 100,
+    })
+
+
+def get_campaign_detail(campaign_id: str) -> dict:
+    """Detalle completo de una campaña específica."""
+    return _get("/campaign/get/", {
+        "advertiser_id": _advertiser_id(),
+        "campaign_ids": f'["{campaign_id}"]',
+    })
+
+
+def get_adgroup_detail(adgroup_id: str) -> dict:
+    """Detalle completo de un ad group específico."""
+    return _get("/adgroup/get/", {
+        "advertiser_id": _advertiser_id(),
+        "adgroup_ids": f'["{adgroup_id}"]',
+    })
+
+
+def update_campaign_name(campaign_id: str, new_name: str) -> dict:
+    """Renombra una campaña."""
+    return _post("/campaign/update/", {
+        "advertiser_id": _advertiser_id(),
+        "campaign_id": campaign_id,
+        "campaign_name": new_name,
+    })
+
+
+def update_adgroup_name(adgroup_id: str, new_name: str) -> dict:
+    """Renombra un ad group."""
+    return _post("/adgroup/update/", {
+        "advertiser_id": _advertiser_id(),
+        "adgroup_id": adgroup_id,
+        "adgroup_name": new_name,
+    })
+
+
+def update_adgroup_budget(adgroup_id: str, budget: float) -> dict:
+    """Cambia el presupuesto de un ad group."""
+    return _post("/adgroup/update/", {
+        "advertiser_id": _advertiser_id(),
+        "adgroup_id": adgroup_id,
+        "budget": budget,
+    })
+
+
+def duplicate_ad(ad_id: str, adgroup_id: str) -> dict:
+    """Duplica un anuncio dentro del mismo ad group."""
+    return _post("/ad/copy/", {
+        "advertiser_id": _advertiser_id(),
+        "ad_ids": [ad_id],
+        "adgroup_id": adgroup_id,
+    })
+
+
+def duplicate_adgroup(adgroup_id: str, campaign_id: str) -> dict:
+    """Duplica un ad group dentro de la misma campaña."""
+    return _post("/adgroup/copy/", {
+        "advertiser_id": _advertiser_id(),
+        "adgroup_ids": [adgroup_id],
+        "campaign_id": campaign_id,
+    })
+
+
+def create_campaign(
+    name: str,
+    objective: str,
+    budget_mode: str = "BUDGET_MODE_INFINITE",
+    budget: float = 0,
+) -> dict:
+    """
+    Crea una campaña nueva.
+    objective: REACH | TRAFFIC | WEBSITECONVERSIONS | LEAD_GENERATION | PRODUCT_SALES
+    budget_mode: BUDGET_MODE_INFINITE | BUDGET_MODE_DAY | BUDGET_MODE_TOTAL
+    budget: requerido si budget_mode != BUDGET_MODE_INFINITE
+    """
+    body: dict = {
+        "advertiser_id": _advertiser_id(),
+        "campaign_name": name,
+        "objective_type": objective,
+        "budget_mode": budget_mode,
+    }
+    if budget_mode != "BUDGET_MODE_INFINITE":
+        body["budget"] = budget
+    return _post("/campaign/create/", body)
+
+
 def update_campaign_status(campaign_id: str, status: str) -> dict:
     """
     Activa o pausa una campaña.

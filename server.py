@@ -133,6 +133,148 @@ def get_conversion_report(
 
 
 @mcp.tool()
+def get_account_balance() -> dict:
+    """
+    Devuelve el saldo disponible y el historial de recargas de la cuenta de TikTok Ads.
+    """
+    return tiktok.get_account_balance()
+
+
+@mcp.tool()
+def get_audiences() -> dict:
+    """
+    Lista las audiencias personalizadas configuradas en la cuenta:
+    remarketing, lookalike, listas de clientes, etc.
+    """
+    return tiktok.get_audiences()
+
+
+@mcp.tool()
+def get_video_library() -> dict:
+    """
+    Lista los videos subidos a la biblioteca de creativos de TikTok Ads.
+    """
+    return tiktok.get_video_library()
+
+
+@mcp.tool()
+def get_image_library() -> dict:
+    """
+    Lista las imágenes subidas a la biblioteca de creativos de TikTok Ads.
+    """
+    return tiktok.get_image_library()
+
+
+@mcp.tool()
+def get_campaign_detail(campaign_id: str) -> dict:
+    """
+    Devuelve el detalle completo de una campaña específica.
+
+    Args:
+        campaign_id: ID de la campaña (obtenlo con get_campaigns).
+    """
+    return tiktok.get_campaign_detail(campaign_id=campaign_id)
+
+
+@mcp.tool()
+def get_adgroup_detail(adgroup_id: str) -> dict:
+    """
+    Devuelve el detalle completo de un ad group específico.
+
+    Args:
+        adgroup_id: ID del ad group (obtenlo con get_adgroups).
+    """
+    return tiktok.get_adgroup_detail(adgroup_id=adgroup_id)
+
+
+@mcp.tool()
+def update_campaign_name(campaign_id: str, new_name: str) -> dict:
+    """
+    Renombra una campaña.
+
+    Args:
+        campaign_id: ID de la campaña (obtenlo con get_campaigns).
+        new_name:    Nuevo nombre para la campaña.
+    """
+    return tiktok.update_campaign_name(campaign_id=campaign_id, new_name=new_name)
+
+
+@mcp.tool()
+def update_adgroup_name(adgroup_id: str, new_name: str) -> dict:
+    """
+    Renombra un ad group.
+
+    Args:
+        adgroup_id: ID del ad group (obtenlo con get_adgroups).
+        new_name:   Nuevo nombre para el ad group.
+    """
+    return tiktok.update_adgroup_name(adgroup_id=adgroup_id, new_name=new_name)
+
+
+@mcp.tool()
+def update_adgroup_budget(adgroup_id: str, budget: float) -> dict:
+    """
+    Cambia el presupuesto de un ad group.
+
+    Args:
+        adgroup_id: ID del ad group (obtenlo con get_adgroups).
+        budget:     Nuevo presupuesto en la moneda de la cuenta (ej: 50.0 = $50).
+    """
+    return tiktok.update_adgroup_budget(adgroup_id=adgroup_id, budget=budget)
+
+
+@mcp.tool()
+def duplicate_ad(ad_id: str, adgroup_id: str) -> dict:
+    """
+    Duplica un anuncio dentro del mismo ad group.
+
+    Args:
+        ad_id:      ID del anuncio a duplicar (obtenlo con get_ads).
+        adgroup_id: ID del ad group destino (puede ser el mismo de origen).
+    """
+    return tiktok.duplicate_ad(ad_id=ad_id, adgroup_id=adgroup_id)
+
+
+@mcp.tool()
+def duplicate_adgroup(adgroup_id: str, campaign_id: str) -> dict:
+    """
+    Duplica un ad group completo dentro de la misma campaña.
+
+    Args:
+        adgroup_id:  ID del ad group a duplicar (obtenlo con get_adgroups).
+        campaign_id: ID de la campaña destino (obtenlo con get_campaigns).
+    """
+    return tiktok.duplicate_adgroup(adgroup_id=adgroup_id, campaign_id=campaign_id)
+
+
+@mcp.tool()
+def create_campaign(
+    name: str,
+    objective: str,
+    budget_mode: str = "BUDGET_MODE_INFINITE",
+    budget: float = 0,
+) -> dict:
+    """
+    Crea una campaña nueva en TikTok Ads.
+
+    Args:
+        name:        Nombre de la campaña.
+        objective:   Objetivo: REACH | TRAFFIC | WEBSITECONVERSIONS |
+                     LEAD_GENERATION | PRODUCT_SALES.
+        budget_mode: BUDGET_MODE_INFINITE (sin límite) | BUDGET_MODE_DAY
+                     (diario) | BUDGET_MODE_TOTAL (total). Por defecto: sin límite.
+        budget:      Monto del presupuesto. Requerido si budget_mode no es
+                     BUDGET_MODE_INFINITE.
+    """
+    return tiktok.create_campaign(
+        name=name,
+        objective=objective,
+        budget_mode=budget_mode,
+        budget=budget,
+    )
+
+
+@mcp.tool()
 def update_campaign_status(campaign_id: str, status: str) -> dict:
     """
     Activa, pausa o elimina una campaña.
