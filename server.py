@@ -177,6 +177,24 @@ def get_campaign_detail(campaign_id: str) -> dict:
 
 
 @mcp.tool()
+def get_ad_detail(ad_id: str) -> dict:
+    """
+    Devuelve el estado real de un anuncio individual por su ID.
+
+    Campos clave en la respuesta:
+    - opt_status: estado puesto por el usuario → ENABLE (activo) | DISABLE (pausado)
+    - status: estado de entrega calculado (considera campaña y ad group padre)
+    - operation_status: estado operativo detallado
+
+    Útil cuando get_ads no deja claro si un anuncio está pausado manualmente.
+
+    Args:
+        ad_id: ID del anuncio (ej: 1853579415379025).
+    """
+    return tiktok.get_ad_detail(ad_id=ad_id)
+
+
+@mcp.tool()
 def get_adgroup_detail(adgroup_id: str) -> dict:
     """
     Devuelve el detalle completo de un ad group específico.
