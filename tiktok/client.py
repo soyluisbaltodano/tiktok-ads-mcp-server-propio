@@ -268,18 +268,11 @@ def get_adgroup_detail(adgroup_id: str) -> dict:
 def get_ad_detail(ad_id: str) -> dict:
     """
     Detalle de un anuncio individual por su ID.
-    Devuelve explícitamente opt_status (estado on/off puesto por el usuario),
-    status (estado de entrega calculado) y operation_status.
+    Devuelve todos los campos de estado disponibles para ese anuncio.
     """
-    import json
     return _get("/ad/get/", {
         "advertiser_id": _advertiser_id(),
         "ad_ids": f'["{ad_id}"]',
-        "fields": json.dumps([
-            "ad_id", "ad_name", "adgroup_id", "campaign_id",
-            "opt_status", "status", "operation_status",
-            "create_time", "modify_time",
-        ]),
     })
 
 
