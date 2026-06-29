@@ -267,13 +267,28 @@ def get_adgroup_detail(adgroup_id: str) -> dict:
 
 def get_ad_detail(ad_id: str) -> dict:
     """
-    Detalle de un anuncio individual por su ID.
-    Devuelve todos los campos de estado disponibles para ese anuncio.
+    Busca un anuncio por su ID paginando todos los anuncios de la cuenta.
+    Devuelve todos los campos de estado del anuncio encontrado.
     """
-    return _get("/ad/get/", {
-        "advertiser_id": _advertiser_id(),
-        "ad_ids": f'["{ad_id}"]',
-    })
+    page = 1
+    while True:
+        data = _get("/ad/get/", {
+            "advertiser_id": _advertiser_id(),
+            "page": page,
+            "page_size": 100,
+        })
+        ads = data.get("list", [])
+        for ad in ads:
+            if str(ad.get("ad_id")) == str(ad_id):
+                return {"found": True, "ad": ad}
+
+        page_info = data.get("page_info", {})
+        total_pages = page_info.get("total_page", 1)
+        if page >= total_pages:
+            break
+        page += 1
+
+    return {"found": False, "error": f"No se encontró ningún anuncio con ad_id={ad_id}"}
 
 
 def update_campaign_name(campaign_id: str, new_name: str) -> dict:
